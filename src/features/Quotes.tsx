@@ -1,16 +1,22 @@
 import { useEffect, useState } from 'react';
 import { getQuotes } from '../utils/api';
-import {Loader} from '../components';
+import {Loader,Error} from '../components';
 
 const Quotes = () => {
   const [quotes, setQuotes] = useState<{ id: string; message: string }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchQuotes = async () => {
       setIsLoading(true); 
-      const quotes = await getQuotes();
+      try {
+        const quotes = await getQuotes();
       setQuotes(quotes);
+      } catch (error:any) {
+        setError(error.message);
+      } 
+      
       setIsLoading(false); 
     };
 //like mount hook
@@ -21,7 +27,9 @@ const Quotes = () => {
   if (isLoading) { 
     return <Loader/>;
   }
-
+  if (error) {
+    return <Error message={error} />;
+  }
   return (
     <div className="container">
     <div className="row">
