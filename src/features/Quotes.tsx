@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getQuotes } from '../utils/api';
-import Loader from '../components/Loader';
+import {Loader} from '../components';
 
 const Quotes = () => {
   const [quotes, setQuotes] = useState<{ id: string; message: string }[]>([]);
