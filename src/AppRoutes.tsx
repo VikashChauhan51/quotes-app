@@ -1,17 +1,19 @@
-// Routes.tsx
-import React from 'react';
+import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Home from './Home';
-import ContactUs from './ContactUs';
-import Quotes from './Quotes'
+
+const Home = lazy(() => import('./Home'));
+const ContactUs = lazy(() => import('./ContactUs'));
+const Quotes = lazy(() => import('./Quotes'));
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/contact-us" element={<ContactUs />} />
-      <Route path="/quotes" element={<Quotes />} />
-    </Routes>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/quotes" element={<Quotes />} />
+      </Routes>
+    </Suspense>
   );
 };
 
