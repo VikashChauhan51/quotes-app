@@ -1,18 +1,26 @@
 import { useEffect, useState } from 'react';
-import { getQuotes } from './api';
+import { getQuotes } from '../utils/api';
+import Loader from '../components/Loader';
 
 const Quotes = () => {
   const [quotes, setQuotes] = useState<{ id: string; message: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchQuotes = async () => {
+      setIsLoading(true); 
       const quotes = await getQuotes();
       setQuotes(quotes);
+      setIsLoading(false); 
     };
-
+//like mount hook
     fetchQuotes();
   }, []);
 
+
+  if (isLoading) { 
+    return <Loader/>;
+  }
 
   return (
     <div className="container">

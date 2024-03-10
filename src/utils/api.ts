@@ -1,5 +1,5 @@
 // api.ts
-import HttpClient from "./libs/HttpClient";
+import HttpClient from "../libs/HttpClient";
 
 export const getQuotes = async () => {
   const response = await HttpClient.get(`api/v1/quotes`);
