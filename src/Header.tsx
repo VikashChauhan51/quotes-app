@@ -9,6 +9,7 @@ const Header = () => {
                 <Nav.Link as={Link} to="/">Home</Nav.Link>
                 <Nav.Link as={Link} to="/contact-us">Contact Us</Nav.Link>
                 <Nav.Link as={Link} to="/quotes">Quotes</Nav.Link>
+                <Nav.Link as={Link} to="/add-quote">Add Quotes</Nav.Link>
             </Nav>
         </Navbar>
     );

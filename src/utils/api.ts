@@ -11,7 +11,7 @@ export const getQuote = async (id: string) => {
   return response.data;
 };
 
-export const createQuote = async (quote: { id: string; message: string }) => {
+export const createQuote = async (quote: { message: string }) => {
   const response = await HttpClient.post(`$api/v1/quote`, quote);
   return response.data;
 };
