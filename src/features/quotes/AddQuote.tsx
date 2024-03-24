@@ -1,55 +1,87 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { createQuote } from '../../utils/api';
 import { Loader, Error } from '../../components';
 import { Button, Form } from 'react-bootstrap';
 
+interface State {
+  message: string;
+  isLoading: boolean;
+  error: string | null;
+  messageError: string | null;
+}
+
+type Action =
+  | { type: 'SET_MESSAGE'; payload: string }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'SET_MESSAGE_ERROR'; payload: string | null };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'SET_MESSAGE':
+      return { ...state, message: action.payload };
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+    case 'SET_ERROR':
+      return { ...state, error: action.payload };
+    case 'SET_MESSAGE_ERROR':
+      return { ...state, messageError: action.payload };
+    default:
+      return state;
+  }
+}
+
 const AddQuote: React.FC = () => {
-  const [message, setMessage] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [messageError, setMessageError] = useState<string | null>(null);
+  const [state, dispatch] = useReducer(reducer, {
+    message: '',
+    isLoading: false,
+    error: null,
+    messageError: null,
+  });
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (message.trim() === "") {
-        setMessageError("Message is required");
-        return;
-      }
-      setMessageError(null);
+    if (state.message.trim() === "") {
+      dispatch({ type: 'SET_MESSAGE_ERROR', payload: "Message is required" });
+      return;
+    }
+    dispatch({ type: 'SET_MESSAGE_ERROR', payload: null });
     try {
-      await createQuote( {message: message });
-      setMessage("");
-    } catch (err:any) {
-      setError(err.message);
+      dispatch({ type: 'SET_LOADING', payload: true });
+      await createQuote({ message: state.message });
+      dispatch({ type: 'SET_MESSAGE', payload: "" });
+    } catch (err: any) {
+      dispatch({ type: 'SET_ERROR', payload: err.message });
     } finally {
-      setIsLoading(false);
+      dispatch({ type: 'SET_LOADING', payload: false });
     }
   };
 
-  if (isLoading) { 
+  if (state.isLoading) {
     return <Loader />;
   }
-  if (error) {
-    return <Error message={error} />;
+  if (state.error) {
+    return <Error message={state.error} />;
   }
   return (
     <div className="container">
       <div className="row">
         <Form className="form-inline" onSubmit={handleSubmit}>
-            <br/>
+          <br/>
           <Form.Group className="form-group mb-2" controlId="formBasicEmail">
             <Form.Control 
               type="text" 
               className="form-control"
               placeholder="Enter message" 
-              value={message} 
-              isInvalid={!!messageError}
-              onChange={(e) => setMessage(e.target.value)} 
+              value={state.message} 
+              isInvalid={!!state.messageError}
+              onChange={(e) => dispatch({ type: 'SET_MESSAGE', payload: e.target.value })} 
             />
             <Form.Control.Feedback type='invalid'>
-              {messageError}
+              {state.messageError}
             </Form.Control.Feedback>
           </Form.Group>
-          <Button className="btn btn-primary mb-2" type="submit">
+          <Button disabled={state.isLoading} className="btn btn-primary mb-2" type="submit">
             Submit
           </Button>
         </Form>
