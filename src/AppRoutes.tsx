@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import NetworkStatus from './hooks/NetworkStatus';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Home = lazy(() => import('./features/Home'));
 const ContactUs = lazy(() => import('./features/ContactUs'));
@@ -16,7 +17,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact-us" element={<ContactUs />} />
-        <Route path="/quotes" element={ <NetworkStatus><Quotes /></NetworkStatus>} />
+        <Route path="/quotes" element={ <NetworkStatus><ErrorBoundary><Quotes /></ErrorBoundary></NetworkStatus>} />
         <Route path="/add-quote" element={ <NetworkStatus><AddQuote /></NetworkStatus>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
